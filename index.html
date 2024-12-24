@@ -5,61 +5,7 @@
   <title>Fancy Web Chat</title>
   <link rel="preconnect" href="https://fonts.gstatic.com"/>
   <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;600&display=swap" rel="stylesheet"/>
-  <style>
-    * { box-sizing: border-box; margin: 0; padding: 0; }
-    body {
-      min-height: 100vh; font-family: 'Poppins', sans-serif;
-      background: linear-gradient(135deg, #80d0c7 0%, #13547a 100%);
-      display: flex; align-items: center; justify-content: center;
-    }
-    .container {
-      width: 600px; padding: 20px; background: rgba(255, 255, 255, 0.2);
-      backdrop-filter: blur(10px); border-radius: 12px; box-shadow: 0 8px 32px rgba(0,0,0,0.2);
-      text-align: center; color: #fff;
-    }
-    h2 { margin-bottom: 15px; }
-    .connect, .chat { display: none; }
-    .connect.active, .chat.active { display: block; }
-    input[type="text"] {
-      width: 100%; padding: 10px; margin-bottom: 12px; border-radius: 6px; border: none;
-      outline: none; font-size: 1em;
-    }
-    button {
-      border-radius: 6px; border: none; cursor: pointer; font-size: 1em;
-      color: #13547a; background: #fff; font-weight: 600;
-      transition: transform 0.2s; padding: 10px;
-    }
-    button:hover { transform: scale(1.05); }
-    .message-container {
-      border: 1px solid rgba(255, 255, 255, 0.3); padding: 10px; height: 300px; overflow-y: auto;
-      margin-bottom: 10px; border-radius: 6px; background-color: rgba(255,255,255,0.1);
-      display: flex; flex-direction: column;
-    }
-    .input-row { display: flex; }
-    .input-row input {
-      flex: 1; margin-right: 8px; padding: 10px; border-radius: 6px; border: none;
-    }
-    .input-row button {
-      width: auto; min-width: 60px; padding: 10px 12px;
-    }
-    /* New Styles */
-    .message {
-      max-width: 70%; padding: 10px 15px; margin: 5px 0; border-radius: 20px; 
-      word-wrap: break-word;
-      clear: both;
-    }
-    .sent {
-      background-color: #4CAF50; /* Green */
-      align-self: flex-end;
-      color: white;
-      margin-left: auto;
-    }
-    .received {
-      background-color: #f1f0f0; /* Light gray */
-      align-self: flex-start;
-      color: black;
-    }
-  </style>
+  <link rel="stylesheet" href="style.css"/>
 </head>
 <body>
   <div class="container">
@@ -79,57 +25,6 @@
   </div>
 
   <script src="/socket.io/socket.io.js"></script>
-  <script>
-    const socket = io();
-    let partnerCode = null; // Store partner's code here
-
-    // Set user's assigned code in UI
-    socket.on('assignedCode', (code) => {
-      document.getElementById('chatCode').textContent = code;
-    });
-
-    // Show chat interface if connected
-    socket.on('connected', (otherPersonsCode) => {
-      partnerCode = otherPersonsCode; // Save the partner's code
-      document.getElementById('connectForm').classList.remove('active');
-      document.getElementById('chatInterface').classList.add('active');
-      document.getElementById('errorMsg').textContent = '';
-    });
-
-    // Show error if invalid code
-    socket.on('errorMsg', (msg) => {
-      document.getElementById('errorMsg').textContent = msg;
-    });
-
-    // Receive message
-    socket.on('messageFrom', (payload) => {
-      const container = document.getElementById('chatMessages');
-      const messageDiv = document.createElement('div');
-      messageDiv.classList.add('message', 'received');
-      messageDiv.textContent = payload;
-      container.appendChild(messageDiv);
-      container.scrollTop = container.scrollHeight;
-    });
-
-    function connect() {
-      const codeEntered = document.getElementById('codeInput').value.trim();
-      socket.emit('joinWithCode', codeEntered);
-    }
-
-    function sendMessage() {
-      const msg = document.getElementById('messageInput').value.trim();
-      if (!msg || !partnerCode) return;
-      // Send to partner
-      socket.emit('messageTo', { code: partnerCode, payload: msg });
-      // Display locally
-      const container = document.getElementById('chatMessages');
-      const messageDiv = document.createElement('div');
-      messageDiv.classList.add('message', 'sent');
-      messageDiv.textContent = msg;
-      container.appendChild(messageDiv);
-      document.getElementById('messageInput').value = '';
-      container.scrollTop = container.scrollHeight;
-    }
-  </script>
+  <script src="client.js"></script>
 </body>
 </html>
