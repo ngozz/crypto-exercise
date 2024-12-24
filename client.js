@@ -1,6 +1,18 @@
 const socket = io();
 let partnerCode = null; // Store partner's code here
 
+document.getElementById('messageInput').addEventListener('keypress', function(e) {
+  if (e.key === 'Enter') {
+      sendMessage();
+  }
+});
+
+document.getElementById('codeInput').addEventListener('keypress', function(e) {
+  if (e.key === 'Enter') {
+      connect();
+  }
+});
+
 // Set user's assigned code in UI
 socket.on('assignedCode', (code) => {
   document.getElementById('chatCode').textContent = code;
